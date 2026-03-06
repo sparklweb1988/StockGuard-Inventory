@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-8">
+        <div class="card shadow-sm p-4">
+            <h3 class="mb-4 text-center">Create Order / Sales</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Customer</label>
+                    <select name="customer" class="form-select" required>
+                        <option value="">Select Customer</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Products</label>
+                    <div class="row">
+                        {% for product in products %}
+                        <div class="col-md-6 mb-2">
+                            <div class="input-group">
+                                <span class="input-group-text">{{ product.name }} ({{ product.total_stock }} in stock)</span>
+                                <input type="number" name="quantity_{{ product.id }}" class="form-control" min="0" placeholder="Qty">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Create Order</button>
+            </form>
+
+            <a href="/orders/" class="btn btn-secondary w-100 mt-3">Back to Orders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

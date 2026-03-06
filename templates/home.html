@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="text-center py-5 bg-light">
+    <h1 class="fw-bold display-4">Smart Inventory Management for Modern Businesses</h1>
+    
+    <!-- Wrapping the paragraphs inside a custom container -->
+    <div class="mx-auto" style="max-width: 600px;">
+        <p class="lead text-muted mt-3">
+            Seamlessly track stock, manage expiry dates, and generate invoices — all in one intuitive and powerful SaaS platform.
+        </p>
+        <p class="text-muted mb-4">
+            Whether you're a small business or a growing enterprise, our system is built to scale with your needs.
+        </p>
+    </div>
+
+    <!-- Call to Action -->
+    {% if not user.is_authenticated %}
+        <a href="/signup/" class="btn btn-primary btn-lg mt-3">Get Started</a>
+    {% else %}
+        <a href="/dashboard/" class="btn btn-success btn-lg mt-3">Go to Dashboard</a>
+    {% endif %}
+</section>
+
+<!-- Key Features Section -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">Key Features</h2>
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Expiry Tracking</h4>
+                    <p class="card-text text-muted">
+                        Never lose money from expired stock again. Our platform tracks expiration dates and alerts you before products expire, helping you maintain optimal stock levels.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Invoice Generation</h4>
+                    <p class="card-text text-muted">
+                        Create professional invoices instantly. Automatically calculate totals, taxes, and discounts, and generate customizable invoices to share with your clients.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Multi-Business SaaS</h4>
+                    <p class="card-text text-muted">
+                        Our platform supports multiple businesses, ensuring your data remains secure and isolated. Easily manage different brands or entities within a single account.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Why Choose Our Platform?</h2>
+
+        <!-- Adding a wrapper with restricted width for the text -->
+        <div class="mx-auto" style="max-width: 800px;">
+            <div class="row text-center">
+                <div class="col-md-6 mb-4">
+                    <h4>Streamlined Operations</h4>
+                    <p>Our platform simplifies complex inventory and order management tasks, allowing you to focus on growing your business rather than worrying about stock levels.</p>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h4>Real-Time Updates</h4>
+                    <p>With real-time stock updates, batch tracking, and order status monitoring, you're always in control of your business operations from anywhere.</p>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-md-6 mb-4">
+                    <h4>Scalability</h4>
+                    <p>Our SaaS platform grows with your business. Add new products, customers, and orders as your business expands. You're never limited by your tools.</p>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h4>Customizable Features</h4>
+                    <p>From branding to invoice templates, our platform allows customization to match your business's unique needs and style.</p>
+                </div>
+            </div>
+        </div> <!-- End of the wrapper div -->
+    </div>
+</section>
+
+
+<!-- Testimonials Section (Optional) -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">What Our Customers Say</h2>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <blockquote class="blockquote">
+                <p class="mb-0">"This platform has completely transformed the way we manage our inventory. We now save time and avoid stockouts thanks to the expiry tracking feature!"</p>
+                <footer class="blockquote-footer">Jane Doe, CEO of XYZ Corp.</footer>
+            </blockquote>
+        </div>
+        <div class="col-md-4 text-center">
+            <blockquote class="blockquote">
+                <p class="mb-0">"The invoice generation is a lifesaver. It’s so easy to use and looks professional. We can now send invoices to clients instantly."</p>
+                <footer class="blockquote-footer">John Smith, Owner of ABC Enterprises</footer>
+            </blockquote>
+        </div>
+        <div class="col-md-4 text-center">
+            <blockquote class="blockquote">
+                <p class="mb-0">"The multi-business support has helped us consolidate multiple stores under one account. This is the best SaaS platform we’ve used!"</p>
+                <footer class="blockquote-footer">Sarah Lee, Operations Manager at Retail Solutions</footer>
+            </blockquote>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="text-center py-5 bg-light">
+    <h3 class="display-5">Ready to Simplify Your Inventory Management?</h3>
+    <p class="lead text-muted mb-4">Sign up now and take control of your business with our powerful, all-in-one SaaS platform.</p>
+    <a href="/signup/" class="btn btn-primary btn-lg">Get Started</a>
+</section>
+
+{% endblock %}

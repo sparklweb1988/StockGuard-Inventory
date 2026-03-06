@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center py-5">
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm p-4 text-center">
+
+            <h3 class="mb-3">Delete Customer</h3>
+
+            <p>
+                Are you sure you want to delete
+                <strong>{{ customer.name }}</strong>?
+            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button type="submit" class="btn btn-danger w-100">
+                    Confirm Delete
+                </button>
+
+            </form>
+
+            <a href="/customers/" class="btn btn-secondary w-100 mt-3">
+                Cancel
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

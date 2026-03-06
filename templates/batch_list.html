@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h3>Batches for {{ product.name }}</h3>
+    <a href="/batch/create/{{ product.id }}/" class="btn btn-primary">Add Batch</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Batch Number</th>
+            <th>Quantity</th>
+            <th>Expiry Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for batch in batches %}
+        <tr>
+            <td>{{ batch.batch_number }}</td>
+            <td>{{ batch.quantity }}</td>
+            <td>{{ batch.expiry_date }}</td>
+            <td>
+                {% if batch.is_expired %} <span class="text-danger">Expired</span> 
+                {% else %} <span class="text-success">Active</span> {% endif %}
+            </td>
+            <td>
+                <a href="/batch/update/{{ batch.id }}/" class="btn btn-warning btn-sm">Update</a>
+                <a href="/batch/delete/{{ batch.id }}/" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No batches found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="/products/" class="btn btn-secondary mt-3">Back to Products</a>
+{% endblock %}

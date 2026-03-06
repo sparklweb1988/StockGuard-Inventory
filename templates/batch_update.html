@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h3 class="mb-4 text-center">Update Batch for {{ batch.product.name }}</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Batch Number</label>
+                    <input type="text" name="batch_number" class="form-control" value="{{ batch.batch_number }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" name="quantity" class="form-control" value="{{ batch.quantity }}" min="1" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Expiry Date</label>
+                    <input type="date" name="expiry_date" class="form-control" value="{{ batch.expiry_date }}" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Update Batch</button>
+            </form>
+
+            <a href="/batches/{{ batch.product.id }}/" class="btn btn-secondary w-100 mt-3">Back to Batches</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between mb-3">
+    <h3>Customers</h3>
+    <a href="/customers/create/" class="btn btn-primary">Add Customer</a>
+</div>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th width="160">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for customer in customers %}
+
+        <tr>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.phone }}</td>
+
+            <td>
+
+                <a href="/customers/update/{{ customer.id }}/"
+                   class="btn btn-warning btn-sm">
+                   Update
+                </a>
+
+                <a href="/customers/delete/{{ customer.id }}/"
+                   class="btn btn-danger btn-sm">
+                   Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}

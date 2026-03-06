@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h3>Orders</h3>
+    <a href="/orders/create/" class="btn btn-primary">Create Order</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Order #</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Change Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.order_number }}</td>
+            <td>{{ order.customer }}</td>
+            <td>
+                <span class="badge bg-info">{{ order.status }}</span>
+            </td>
+           
+         
+            <td>&#8358; {{ order.total }}</td>
+            <td>
+                <form method="POST" action="/orders/status/{{ order.id }}/">
+                    {% csrf_token %}
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="draft">draft</option>
+                        <option value="paid">Paid</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button class="btn btn-sm btn-success mt-1">Update</button>
+                </form>
+            </td>
+            <td>
+                <!-- View Invoice Button -->
+                <a href="{% url 'invoice_view' order.id %}" class="btn btn-sm btn-info">View Invoice</a>
+                <!-- Download PDF Button -->
+                <a href="{% url 'invoice_pdf_view' order.id %}" class="btn btn-sm btn-success">Download PDF</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No orders found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

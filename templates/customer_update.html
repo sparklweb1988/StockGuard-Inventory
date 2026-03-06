@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm p-4">
+
+            <h3 class="mb-4 text-center">Update Customer</h3>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Customer Name</label>
+
+                    <input
+                        type="text"
+                        name="name"
+                        value="{{ customer.name }}"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        value="{{ customer.phone }}"
+                        class="form-control"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100">
+                    Update Customer
+                </button>
+
+            </form>
+
+            <a href="/customers/" class="btn btn-secondary w-100 mt-3">
+                Back to Customers
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

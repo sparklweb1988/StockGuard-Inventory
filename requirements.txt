@@ -7,7 +7,7 @@ charset-normalizer==3.4.4
 cryptography==41.0.3
 cssselect2==0.9.0
 Django==6.0.3
-et_xmlfile==2.0.1
+et_xmlfile==2.0.0
 freetype-py==2.5.1
 gunicorn==20.1.0
 html5lib==1.1
@@ -22,7 +22,7 @@ pycparser==2.21
 pyHanko==0.33.0
 pyhanko-certvalidator==0.29.1
 pypdf==6.7.5
-python-bidi==0.6.7
+# python-bidi removed to avoid Rust build issues
 PyYAML==6.0.3
 reportlab==4.4.10
 requests==2.32.5

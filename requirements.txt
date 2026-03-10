@@ -36,3 +36,5 @@ uritools==6.0.1
 urllib3==2.6.3
 webencodings==0.5.1
 whitenoise==6.12.0
+
+

@@ -341,8 +341,6 @@ def invoice_view(request, order_id):
         "invoice": invoice,
         "order": order,
         "order_items": order_items
-<<<<<<< HEAD
+
     })
-=======
-    })
->>>>>>> c660c77c6b7cced39bf71bd74af5a94a76ce4113
+  

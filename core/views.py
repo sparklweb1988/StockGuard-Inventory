@@ -196,23 +196,21 @@ def verify_payment(request):
 
 @csrf_exempt
 def paystack_webhook(request):
+    try:
+        payload = json.loads(request.body)
+        event = payload.get("event")
 
-    payload = json.loads(request.body)
+        if event == "charge.success":
+            email = payload["data"]["customer"]["email"]
+            plan = payload["data"]["metadata"]["plan"]
+            user = User.objects.get(email=email)
+            user.plan = plan.lower()
+            user.subscription_end = timezone.now() + timedelta(days=30)
+            user.save()
 
-    event = payload.get("event")
-
-    if event == "charge.success":
-
-        email = payload["data"]["customer"]["email"]
-        plan = payload["data"]["metadata"]["plan"]
-
-        user = User.objects.get(email=email)
-
-        user.plan = plan.lower()
-        user.subscription_end = timezone.now() + timedelta(days=30)
-        user.save()
-
-    return HttpResponse(status=200)
+        return HttpResponse(status=200)
+    except Exception:
+        return HttpResponse(status=400)
 
 
 
@@ -248,40 +246,42 @@ def pricing(request):
 
 
 
+@csrf_exempt
 @login_required
 def paystack_verify(request):
+    """
+    Verify Paystack payment from frontend button POST.
+    Updates user plan and subscription_end if successful.
+    """
+    if request.method != "POST":
+        return JsonResponse({"status": "failed", "message": "Invalid request method"})
 
-    reference = request.GET.get("reference")
+    try:
+        data = json.loads(request.body)
+        reference = data.get("reference")
+        plan = data.get("plan")
 
-    if not reference:
-        return JsonResponse({"status": "failed", "message": "No reference supplied"})
+        if not reference or not plan:
+            return JsonResponse({"status": "failed", "message": "Reference or plan missing"})
 
-    headers = {
-        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
-    }
+        url = f"https://api.paystack.co/transaction/verify/{reference}"
+        headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
+        response = requests.get(url, headers=headers)
+        result = response.json()
 
-    url = f"https://api.paystack.co/transaction/verify/{reference}"
+        if result.get("status") and result["data"]["status"] == "success":
+            # Update user plan and subscription
+            user = request.user
+            user.plan = plan.lower()
+            user.subscription_end = timezone.now() + timedelta(days=30)
+            user.save()
 
-    response = requests.get(url, headers=headers)
-    result = response.json()
+            return JsonResponse({"status": "success"})
+        else:
+            return JsonResponse({"status": "failed", "message": "Payment not successful"})
 
-    if result.get("status") and result["data"]["status"] == "success":
-
-        plan = result["data"]["metadata"]["plan"]
-
-        user = request.user
-        user.plan = plan.lower()
-        user.subscription_end = timezone.now() + timedelta(days=30)
-        user.save()
-
-        messages.success(request, "Payment successful! Your plan has been activated.")
-
-        return redirect("dashboard")
-
-    messages.error(request, "Payment verification failed.")
-    return redirect("pricing")
-
-
+    except Exception as e:
+        return JsonResponse({"status": "failed", "message": str(e)})
 
 
 @csrf_exempt

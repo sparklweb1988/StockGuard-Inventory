@@ -199,4 +199,4 @@ AUTH_USER_MODEL = "core.User"
 # ---------------------------------------------------
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-```
+

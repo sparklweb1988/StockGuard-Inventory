@@ -280,25 +280,50 @@ def paystack_verify(request):
 @login_required
 def paystack_initialize(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        plan_name = data.get("plan")
-        email = request.user.email
-        amount = int(data.get("amount", 0))  # in kobo
+        try:
+            data = json.loads(request.body)
 
-        headers = {
-            "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
-            "Content-Type": "application/json",
-        }
-        payload = {
-            "email": email,
-            "amount": amount,
-            "callback_url": request.build_absolute_uri(reverse("paystack_verify")),
-            "metadata": {"plan": plan_name}
-        }
-        r = requests.post("https://api.paystack.co/transaction/initialize", json=payload, headers=headers)
-        response = r.json()
-        return JsonResponse(response)
-    return JsonResponse({"status": "error", "message": "Invalid request"})
+            plan_name = data.get("plan")
+            amount = int(data.get("amount", 0))
+            email = request.user.email
+
+            headers = {
+                "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
+                "Content-Type": "application/json",
+            }
+
+            payload = {
+                "email": email,
+                "amount": amount,
+                "callback_url": request.build_absolute_uri("/payment/verify/"),
+                "metadata": {
+                    "plan": plan_name,
+                    "user_id": request.user.id
+                }
+            }
+
+            response = requests.post(
+                "https://api.paystack.co/transaction/initialize",
+                json=payload,
+                headers=headers
+            )
+
+            return JsonResponse(response.json())
+
+        except Exception as e:
+            return JsonResponse({
+                "status": False,
+                "message": str(e)
+            })
+
+    return JsonResponse({
+        "status": False,
+        "message": "Invalid request"
+    })
+
+
+
+
 
 # --------------------------
 # Home / Dashboard

@@ -194,24 +194,44 @@ def verify_payment(request):
 
 
 
+
 @csrf_exempt
 def paystack_webhook(request):
+    """
+    Paystack webhook for charge.success events.
+    Updates the user's plan and subscription_end.
+    Works with your current User model.
+    """
     try:
         payload = json.loads(request.body)
         event = payload.get("event")
 
         if event == "charge.success":
-            email = payload["data"]["customer"]["email"]
-            plan = payload["data"]["metadata"]["plan"]
-            user = User.objects.get(email=email)
+            data = payload.get("data", {})
+            email = data.get("customer", {}).get("email")
+            plan = data.get("metadata", {}).get("plan")
+
+            if not (email and plan):
+                return HttpResponse("Missing data", status=400)
+
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return HttpResponse("User not found", status=404)
+
+            # Update subscription (30 days)
             user.plan = plan.lower()
-            user.subscription_end = timezone.now() + timedelta(days=30)
+            user.subscription_end = timezone.now() + timezone.timedelta(days=30)
             user.save()
 
-        return HttpResponse(status=200)
-    except Exception:
-        return HttpResponse(status=400)
+        # Ignore other events
+        return HttpResponse("Webhook processed", status=200)
 
+    except json.JSONDecodeError:
+        return HttpResponse("Invalid JSON", status=400)
+    except Exception as e:
+        # Optional: log error
+        return HttpResponse(f"Error: {str(e)}", status=400)
 
 
 @login_required

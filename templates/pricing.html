@@ -12,7 +12,7 @@
                     <button class="btn btn-primary paystack-btn"
                         data-plan="{{ plan.name }}"
                         data-email="{{ request.user.email }}"
-                        data-amount="{{ plan.price|floatformat:2|floatformat:0 }}00">
+                        data-amount="{{ plan.price|floatformat:0|add:'00' }}">
                         Pay with Paystack
                     </button>
                 </div>
@@ -30,15 +30,14 @@ payButtons.forEach(btn => {
     btn.addEventListener('click', function() {
         const planName = this.dataset.plan;
         const email = this.dataset.email;
-        const amount = this.dataset.amount;
+        const amount = parseInt(this.dataset.amount); // amount in kobo
 
         var handler = PaystackPop.setup({
-            key: '{{ PAYSTACK_PUBLIC_KEY }}', // Your public key
+            key: '{{ PAYSTACK_PUBLIC_KEY }}',
             email: email,
             amount: amount,
             currency: "NGN",
             callback: function(response){
-                // Send the transaction reference to your server
                 fetch("{% url 'paystack_verify' %}", {
                     method: "POST",
                     headers: {
@@ -49,9 +48,9 @@ payButtons.forEach(btn => {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    if(data.status == "success"){
+                    if(data.status === "success"){
                         alert("Payment successful! Plan upgraded.");
-                        location.reload();
+                        window.location.href = "{% url 'dashboard' %}";
                     } else {
                         alert("Payment failed. Try again.");
                     }

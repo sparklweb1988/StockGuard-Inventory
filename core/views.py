@@ -162,6 +162,9 @@ def verify_payment(request):
 
     reference = request.GET.get("reference")
 
+    if not reference:
+        return render(request, "payment_failed.html")
+
     headers = {
         "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
     }
@@ -173,12 +176,12 @@ def verify_payment(request):
 
     res = response.json()
 
-    if res["status"] and res["data"]["status"] == "success":
+    if res.get("status") and res["data"]["status"] == "success":
+
+        plan = res["data"]["metadata"]["plan"]
 
         user = request.user
-        user.plan = res["data"]["plan"]["name"].lower()
-
-        # 30 day subscription
+        user.plan = plan.lower()
         user.subscription_end = timezone.now() + timedelta(days=30)
 
         user.save()
@@ -191,30 +194,25 @@ def verify_payment(request):
 
 
 
-
-
 @csrf_exempt
 def paystack_webhook(request):
 
     payload = json.loads(request.body)
 
-    event = payload["event"]
+    event = payload.get("event")
 
-    if event == "invoice.payment_success":
+    if event == "charge.success":
 
         email = payload["data"]["customer"]["email"]
+        plan = payload["data"]["metadata"]["plan"]
 
         user = User.objects.get(email=email)
 
-        from datetime import timedelta
-        from django.utils import timezone
-
+        user.plan = plan.lower()
         user.subscription_end = timezone.now() + timedelta(days=30)
         user.save()
 
     return HttpResponse(status=200)
-
-
 
 
 

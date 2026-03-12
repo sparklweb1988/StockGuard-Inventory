@@ -250,28 +250,38 @@ def pricing(request):
 
 
 
-@csrf_exempt
 @login_required
 def paystack_verify(request):
-    import json
-    data = json.loads(request.body)
-    reference = data.get("reference")
-    plan = data.get("plan")
+
+    reference = request.GET.get("reference")
+
+    if not reference:
+        return JsonResponse({"status": "failed", "message": "No reference supplied"})
+
+    headers = {
+        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+    }
 
     url = f"https://api.paystack.co/transaction/verify/{reference}"
-    headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
-    resp = requests.get(url, headers=headers)
-    result = resp.json()
 
-    if result.get("status") == True and result["data"]["status"] == "success":
-        # Upgrade plan
+    response = requests.get(url, headers=headers)
+    result = response.json()
+
+    if result.get("status") and result["data"]["status"] == "success":
+
+        plan = result["data"]["metadata"]["plan"]
+
         user = request.user
         user.plan = plan.lower()
-        user.subscription_end = timezone.now() + timedelta(days=30)  # 1 month subscription
+        user.subscription_end = timezone.now() + timedelta(days=30)
         user.save()
-        return JsonResponse({"status": "success"})
-    return JsonResponse({"status": "failed"})
 
+        messages.success(request, "Payment successful! Your plan has been activated.")
+
+        return redirect("dashboard")
+
+    messages.error(request, "Payment verification failed.")
+    return redirect("pricing")
 
 
 
